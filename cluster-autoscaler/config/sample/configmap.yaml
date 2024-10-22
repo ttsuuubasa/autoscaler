@@ -1,0 +1,59 @@
+apiVersion: v1
+data:
+  status: |
+    time: 2024-10-15 03:11:23.855737222 +0000 UTC
+    autoscalerStatus: Running
+    clusterWide:
+      health:
+        status: Healthy
+        nodeCounts:
+          registered:
+            total: 4
+            ready: 4
+            notStarted: 0
+          longUnregistered: 0
+          unregistered: 0
+        lastProbeTime: "2024-10-15T03:11:23.855737222Z"
+        lastTransitionTime: "2024-10-15T02:19:17.529474224Z"
+      scaleUp:
+        status: NoActivity
+        lastProbeTime: "2024-10-15T03:11:23.855737222Z"
+        lastTransitionTime: "2024-10-15T02:20:04.462190931Z"
+      scaleDown:
+        status: NoCandidates
+        lastProbeTime: "2024-10-15T03:11:23.855737222Z"
+        lastTransitionTime: "2024-10-15T02:46:00.409377623Z"
+    nodeGroups:
+    - name: MachineDeployment/default/capi-quickstart-md-0-wff6k
+      health:
+        status: Healthy
+        nodeCounts:
+          registered:
+            total: 2
+            ready: 2
+            notStarted: 0
+          longUnregistered: 0
+          unregistered: 0
+        cloudProviderTarget: 2
+        minSize: 1
+        maxSize: 3
+        lastProbeTime: "2024-10-15T03:11:23.855737222Z"
+        lastTransitionTime: "2024-10-15T02:19:17.529474224Z"
+      scaleUp:
+        status: NoActivity
+        lastProbeTime: "2024-10-15T03:11:23.855737222Z"
+        lastTransitionTime: "2024-10-15T02:20:04.462190931Z"
+      scaleDown:
+        status: NoCandidates
+        lastProbeTime: "2024-10-15T03:11:23.855737222Z"
+        lastTransitionTime: "2024-10-15T02:46:00.409377623Z"
+kind: ConfigMap
+metadata:
+  annotations:
+    cluster-autoscaler.kubernetes.io/last-updated: 2024-10-15 03:11:23.855737222 +0000
+      UTC
+  creationTimestamp: "2024-10-15T02:19:07Z"
+  name: cluster-autoscaler-status
+  namespace: kube-system
+  resourceVersion: "773524"
+  uid: e3ce2474-5f38-4e6d-82b2-e60331b13a1a
