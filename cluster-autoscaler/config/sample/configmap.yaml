@@ -41,10 +41,26 @@ data:
         lastTransitionTime: "2024-10-15T02:19:17.529474224Z"
       scaleUp:
         status: NoActivity
+        remainingPods:
+          - name: ca-deploy-65f8fc9446-nchjm
+            reasons:
+              - reason: MaxLimitReached
+                count: 1
+              - reason: Backoff
+                count: 1
         lastProbeTime: "2024-10-15T03:11:23.855737222Z"
         lastTransitionTime: "2024-10-15T02:20:04.462190931Z"
       scaleDown:
-        status: NoCandidates
+        status: CandidatePresent
+        candidates:
+          - nodeName: k8s-worker-1
+            unNeededSince: 2024-10-18 08:41:16.082990235 +0000 UTC m=+251444.836580718
+            unNeededDuration 11.588082446s
+        unremovalNodes:
+          - reason: 13
+            count: 1
+          - reason: 9
+            count: 1
         lastProbeTime: "2024-10-15T03:11:23.855737222Z"
         lastTransitionTime: "2024-10-15T02:46:00.409377623Z"
 kind: ConfigMap
