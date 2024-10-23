@@ -17,19 +17,10 @@ data:
         lastTransitionTime: "2024-10-15T02:19:17.529474224Z"
       scaleUp:
         status: NoActivity
-        scaleUpStatus:
-          remainingPods: // ノード増やせずに配備できないPod情報
-            - reason: MaxLimitReached // ノードを増やせない理由(ノードグループの最大ノード数に達しているためノード追加できない)
-              count: 1 // 上記理由で残っている Pod 数
         lastProbeTime: "2024-10-15T03:11:23.855737222Z"
         lastTransitionTime: "2024-10-15T02:20:04.462190931Z"
       scaleDown:
         status: NoCandidates
-        scaleDownStatus:
-          candidate: 1 // CAが不要とみなしたノードが1台ある
-          unremovable:
-            - reason: MinLimitReached // 削除できない理由(ノードグループの最小ノード数に達している)
-              count: 1 // CAが削除できなかったノードが1台ある
         lastProbeTime: "2024-10-15T03:11:23.855737222Z"
         lastTransitionTime: "2024-10-15T02:46:00.409377623Z"
     nodeGroups:
@@ -50,10 +41,19 @@ data:
         lastTransitionTime: "2024-10-15T02:19:17.529474224Z"
       scaleUp:
         status: Needed
+        scaleUpStatus:
+          remainUnschedulablePods:
+          - reason: MaxLimitReached // ノードを増やせない理由(ノードグループの最大ノード数に達しているためノード追加できない)
+            count: 1 // 上記理由で残っている Pod 数
         lastProbeTime: "2024-10-15T03:11:23.855737222Z"
         lastTransitionTime: "2024-10-15T02:20:04.462190931Z"
       scaleDown:
         status: CandidatePresent
+        scaleDownStatus:
+          candidate: 1 // CAが不要とみなしたノードが1台ある
+          unremovable:
+            - reason: MinLimitReached // 削除できない理由(ノードグループの最小ノード数に達している)
+              count: 1 // CAが削除できなかったノードが1台ある
         lastProbeTime: "2024-10-15T03:11:23.855737222Z"
         lastTransitionTime: "2024-10-15T02:46:00.409377623Z"
 kind: ConfigMap
