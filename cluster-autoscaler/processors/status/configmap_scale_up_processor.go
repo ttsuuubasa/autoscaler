@@ -17,52 +17,74 @@ limitations under the License.
 package status
 
 import (
-	"time"
-
-	"k8s.io/autoscaler/cluster-autoscaler/clusterstate/utils"
-	"k8s.io/autoscaler/cluster-autoscaler/context"
+	ca_context "k8s.io/autoscaler/cluster-autoscaler/context"
 )
 
 type ConfigmapScaleUpStatusProcessor struct{}
 
+// ConfigmapScaleUpStatus represents ScaleUpStatus written to Configmap
 type ConfigmapScaleUpStatus struct {
-	NodeGroups []NodeGroupStatus
+	// Result of ScaleUpStatus
+	Result string `json:"result" yaml:"result"`
+	// NodeGroups contains reasons why scaleup is not executed with each node groups
+	NodeGroups []NodeGroupStatus `json:"nodeGroups" yaml:"nodeGroups"`
 }
 
+// NodeGroupStatus contains status of every node group's scaleup status
 type NodeGroupStatus struct {
-	Name string
-
-	ScaleUp NodeGroupScaleUpCondition
+	// Name of the node group
+	Name string `json:"name" yaml:"name"`
+	// ScaleUp contains information of scaleup status
+	ScaleUp NodeGroupScaleUpCondition `json:"scaleUp" yaml:"scaleUp"`
 }
 
+// NodeGroupScaleUpCondition conains scaleup status
 type NodeGroupScaleUpCondition struct {
-	Result ScaleUpResult
-
-	Reasons map[string]int
+	// Reasons contains why scaleup is not executed
+	Reasons map[string]int `json:"reasons yaml:"reasons"`
 }
 
-func (*ConfigmapScaleUpStatusProcessor) Process(context *context.AutoscalingContext, status *ScaleUpStatus) {
+func NewConfigmapScaleUpStatusProcessor() *ConfigmapScaleUpStatusProcessor {
+	return &ConfigmapScaleUpStatusProcessor{}
+}
 
+func (*ConfigmapScaleUpStatusProcessor) Process(context *ca_context.AutoscalingContext, status *ScaleUpStatus) {
 	var configmapStatus ConfigmapScaleUpStatus
 	var nodeGroupStatus NodeGroupStatus
 
+	configmapStatus.Result = scaleUpResult(status.Result)
+	nodeGroupStatus.ScaleUp.Reasons = make(map[string]int)
+
 	for _, unschedulabePods := range status.PodsRemainUnschedulable {
 		for nodeGroup, reasons := range unschedulabePods.SkippedNodeGroups {
-
 			nodeGroupStatus.Name = nodeGroup
-
+			//nodeGroupStatus.ScaleUp.Result = scaleUpResult(status.Result)
 			nodeGroupStatus.ScaleUp.Reasons[reasons.ReasonsStatus()]++
-
 			configmapStatus.NodeGroups = append(configmapStatus.NodeGroups, nodeGroupStatus)
-
 		}
 	}
-
-	utils.WriteStatusConfigMap(context.ClientSet, context.ConfigNamespace,
-		configmapStatus, context.LogRecorder, context.StatusConfigMapName, time.Now())
-
+	WriteStatusConfigMap(context.ClientSet, context.ConfigNamespace, configmapStatus, context.StatusConfigMapName)
 }
 
 func (*ConfigmapScaleUpStatusProcessor) CleanUp() {
 
+}
+
+func scaleUpResult(result ScaleUpResult) string {
+	switch result {
+	case ScaleUpSuccessful:
+		return "ScaleUpSuccessfule"
+	case ScaleUpError:
+		return "ScaleUpError"
+	case ScaleUpNoOptionsAvailable:
+		return "ScaleUpNoOptionsAvailable"
+	case ScaleUpNotNeeded:
+		return "ScaleUpNotNeeded"
+	case ScaleUpNotTried:
+		return "ScaleUpNoTried"
+	case ScaleUpInCooldown:
+		return "ScaleUpInCooldown"
+	default:
+		return "NoScaleUpExecuted"
+	}
 }

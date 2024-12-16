@@ -76,6 +76,10 @@ func (pe *PredicateError) Reasons() []string {
 	return pe.reasons
 }
 
+func (pe *PredicateError) ReasonsStatus() string {
+	return ""
+}
+
 // NewPredicateError creates a new predicate error from error and reasons.
 func NewPredicateError(
 	errorType PredicateErrorType,

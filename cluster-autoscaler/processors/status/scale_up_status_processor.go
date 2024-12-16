@@ -76,6 +76,7 @@ func (s *ScaleUpStatus) WasSuccessful() bool {
 // Reasons interface provides a list of reasons for why something happened or didn't happen.
 type Reasons interface {
 	Reasons() []string
+	ReasonsStatus() string
 }
 
 // ScaleUpStatusProcessor processes the status of the cluster after a scale-up.

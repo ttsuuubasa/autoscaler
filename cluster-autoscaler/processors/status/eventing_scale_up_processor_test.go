@@ -40,6 +40,10 @@ func (tr *testReason) Reasons() []string {
 	return []string{tr.message}
 }
 
+func (tr *testReason) ReasonsStatus() string {
+	return ""
+}
+
 func TestEventingScaleUpStatusProcessor(t *testing.T) {
 	p := &EventingScaleUpStatusProcessor{}
 	p1 := BuildTestPod("p1", 0, 0)

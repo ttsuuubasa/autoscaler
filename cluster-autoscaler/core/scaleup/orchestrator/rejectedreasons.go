@@ -31,6 +31,10 @@ func (sr *RejectedReasons) Reasons() []string {
 	return sr.messages
 }
 
+func (sr *RejectedReasons) ReasonsStatus() string {
+	return ""
+}
+
 var (
 	// AllOrNothingReason means the node group was rejected because not all pods would fit it when using all-or-nothing strategy.
 	AllOrNothingReason = NewRejectedReasons("not all pods would fit and scale-up is using all-or-nothing strategy")

@@ -36,6 +36,19 @@ func (sr *SkippedReasons) Reasons() []string {
 	return sr.messages
 }
 
+func (sr *SkippedReasons) ReasonsStatus() string {
+	switch sr {
+	case BackoffReason:
+		return "BackoffReason"
+	case MaxLimitReachedReason:
+		return "MaxLimitReachedReason"
+	case NotReadyReason:
+		return "NotReadyReason"
+	default:
+		return ""
+	}
+}
+
 var (
 	// BackoffReason node group is in backoff.
 	BackoffReason = NewSkippedReasons("in backoff after failed scale-up")
@@ -54,6 +67,10 @@ type MaxResourceLimitReached struct {
 // Reasons returns a slice of reasons why the node group was not considered for scale up.
 func (sr *MaxResourceLimitReached) Reasons() []string {
 	return sr.messages
+}
+
+func (sr *MaxResourceLimitReached) ReasonsStatus() string {
+	return ""
 }
 
 // Resources returns a slice of resources which were missing in the node group.

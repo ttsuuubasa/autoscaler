@@ -549,6 +549,10 @@ func buildAutoscaler(debuggingSnapshotter debuggingsnapshot.DebuggingSnapshotter
 		opts.Processors.ScaleUpStatusProcessor = status.NewCombinedScaleUpStatusProcessor([]status.ScaleUpStatusProcessor{podinjection.NewFakePodsScaleUpStatusProcessor(podInjectionBackoffRegistry), opts.Processors.ScaleUpStatusProcessor})
 	}
 
+	if *writeStatusConfigMapFlag {
+		opts.Processors.ScaleUpStatusProcessor = status.NewCombinedScaleUpStatusProcessor([]status.ScaleUpStatusProcessor{status.NewConfigmapScaleUpStatusProcessor(), opts.Processors.ScaleUpStatusProcessor})
+	}
+
 	opts.Processors.PodListProcessor = podListProcessor
 	sdCandidatesSorting := previouscandidates.NewPreviousCandidates()
 	scaleDownCandidatesComparers := []scaledowncandidates.CandidatesComparer{
