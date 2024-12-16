@@ -311,6 +311,8 @@ type AutoscalingOptions struct {
 	ForceDeleteLongUnregisteredNodes bool
 	// DynamicResourceAllocationEnabled configures whether logic for handling DRA objects is enabled.
 	DynamicResourceAllocationEnabled bool
+	// FabricDynamicResourceAllocation configures whether DRA handles fabric devices
+	FabricDynamicResourceAllocation bool
 }
 
 // KubeClientOptions specify options for kube client

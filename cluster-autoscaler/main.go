@@ -281,6 +281,7 @@ var (
 	checkCapacityProvisioningRequestBatchTimebox = flag.Duration("check-capacity-provisioning-request-batch-timebox", 10*time.Second, "Maximum time to process a batch of provisioning requests.")
 	forceDeleteLongUnregisteredNodes             = flag.Bool("force-delete-unregistered-nodes", false, "Whether to enable force deletion of long unregistered nodes, regardless of the min size of the node group the belong to.")
 	enableDynamicResourceAllocation              = flag.Bool("enable-dynamic-resource-allocation", false, "Whether logic for handling DRA (Dynamic Resource Allocation) objects is enabled.")
+	fabricDynamicResourceAllocation              = flag.Bool("fabric-dynamic-resource-allocation", false, "Whether DRA (Dynamic Resource Allocation) handles fabric devices")
 )
 
 func isFlagPassed(name string) bool {
@@ -348,6 +349,10 @@ func createAutoscalingOptions() config.AutoscalingOptions {
 		if len(drainPriorityConfigMap) == 0 {
 			klog.Fatalf("Invalid configuration, parsing --drain-priority-config")
 		}
+	}
+
+	if !*enableDynamicResourceAllocation && *fabricDynamicResourceAllocation {
+		klog.Fatalf("Invalid configuration, could not use --fabric-dynamic-resource-allocation when missing --enable-dynamic-resource-allocation")
 	}
 
 	return config.AutoscalingOptions{
@@ -461,6 +466,7 @@ func createAutoscalingOptions() config.AutoscalingOptions {
 		CheckCapacityProvisioningRequestBatchTimebox: *checkCapacityProvisioningRequestBatchTimebox,
 		ForceDeleteLongUnregisteredNodes:             *forceDeleteLongUnregisteredNodes,
 		DynamicResourceAllocationEnabled:             *enableDynamicResourceAllocation,
+		FabricDynamicResourceAllocation:              *fabricDynamicResourceAllocation,
 	}
 }
 
@@ -599,6 +605,8 @@ func buildAutoscaler(context ctx.Context, debuggingSnapshotter debuggingsnapshot
 		} else if autoscalingOptions.CloudProviderName == cloudprovider.GceProviderName {
 			nodeInfoComparatorBuilder = nodegroupset.CreateGceNodeInfoComparator
 			opts.Processors.TemplateNodeInfoProvider = nodeinfosprovider.NewAnnotationNodeInfoProvider(nodeInfoCacheExpireTime, *forceDaemonSets)
+		} else if autoscalingOptions.DynamicResourceAllocationEnabled && autoscalingOptions.FabricDynamicResourceAllocation {
+			opts.Processors.TemplateNodeInfoProvider = nodeinfosprovider.NewFabricNodeInfoProvider(nodeInfoCacheExpireTime, *forceDaemonSets)
 		}
 		nodeInfoComparator = nodeInfoComparatorBuilder(autoscalingOptions.BalancingExtraIgnoredLabels, autoscalingOptions.NodeGroupSetRatios)
 	}
