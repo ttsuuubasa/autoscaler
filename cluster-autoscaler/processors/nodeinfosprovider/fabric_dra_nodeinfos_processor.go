@@ -17,6 +17,7 @@ limitations under the License.
 package nodeinfosprovider
 
 import (
+	"reflect"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -58,6 +59,9 @@ func (p *FabricDRANodeInfoProvider) Process(ctx *context.AutoscalingContext, nod
 		if err != nil {
 			return nil, caerror.ToAutoscalerError(caerror.CloudProviderError, err)
 		}
+		if nodeGroup == nil || reflect.ValueOf(nodeGroup).IsNil() {
+			continue
+		}
 		id := nodeGroup.Id()
 		if _, found := result[id]; !found {
 			if fabricValue, isFabric := node.Labels[NodeHasFabricDeviceKey]; isFabric {
@@ -67,7 +71,6 @@ func (p *FabricDRANodeInfoProvider) Process(ctx *context.AutoscalingContext, nod
 			} else {
 				result[id] = nodeInfos[id]
 			}
-
 		}
 	}
 	return result, nil
