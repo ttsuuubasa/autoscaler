@@ -64,9 +64,8 @@ func (p *FabricDRANodeInfoProvider) Process(ctx *context.AutoscalingContext, nod
 		}
 		id := nodeGroup.Id()
 		if _, found := result[id]; !found {
-			if fabricValue, isFabric := node.Labels[NodeHasFabricDeviceKey]; isFabric {
+			if _, isFabric := node.Labels[NodeHasFabricDeviceKey]; isFabric {
 				nodeInfos[id].LocalResourceSlices = nil
-				nodeInfos[id].Node().Labels[NodeHasFabricDeviceKey] = fabricValue
 				result[id] = nodeInfos[id]
 			} else {
 				result[id] = nodeInfos[id]
